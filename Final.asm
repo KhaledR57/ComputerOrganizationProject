@@ -10,6 +10,7 @@
 	search: .asciiz "7 - Search on specific Request use Binary Search on lists.\n"
 	tirm: .asciiz "8 - For Exit\n"
 	limitex: .asciiz "Size Limit Exceeded"
+	done: .asciiz "Done!"
 	
 	choice: .word 8
 	
@@ -18,10 +19,114 @@
 	list3 : .space 160
 	list4 : .space 160
 	all : .space 640   # Request all[80]
+	
 .text
 
-get_size : 
-	addi $t8 , $a0 , 0
+
+main:
+
+whilo:
+	 la $a0, prompt     # address of prompt
+     li $v0, 4
+     syscall
+     
+     la $a0, addr     # address of addr
+     li $v0, 4
+     syscall
+     
+     la $a0, process    # address of process
+     li $v0, 4
+     syscall
+     
+     la $a0, join     # address of prompt
+     li $v0, 4
+     syscall
+     
+     la $a0, empty     # address of empty
+     li $v0, 4
+     syscall
+     
+     la $a0, update     # address of empty
+     li $v0, 4
+     syscall
+     
+     la $a0, processall     # address of processall
+     li $v0, 4
+     syscall
+     
+     la $a0, search     # address of search
+     li $v0, 4
+     syscall
+     
+     la $a0, tirm     # address of tirm
+     li $v0, 4
+     syscall
+
+				
+     li $v0, 5		# read the choice
+     syscall
+     sw $v0, choice  
+     
+     lw $t0,choice
+     
+
+	choice1:
+		bne $t0,1,choice2
+		li $v0,4
+		la $a0,addr
+		syscall
+		j whilo
+	choice2:
+		bne $t0,2,choice3
+		li $v0,4
+		la $a0,process
+		syscall
+		j whilo
+	choice3:
+		bne $t0,3,choice4
+		li $v0,4
+		la $a0,join
+		syscall
+		j whilo
+	choice4:
+		bne $t0,4,choice5
+		li $v0,4
+		la $a0,empty
+		syscall
+		j whilo
+	choice5:
+		bne $t0,5,choice6
+		li $v0,4
+		la $a0,update
+		syscall
+		j whilo
+	choice6:
+		bne $t0,6,choice7
+		li $v0,4
+		la $a0,processall
+		syscall
+		j whilo
+	choice7:
+		bne $t0,7,choice8
+		li $v0,4
+		la $a0,search
+		syscall
+		j whilo
+	choice8:
+		bne $t0,8,exit
+		li $v0,4
+		la $a0,done
+		syscall
+		
+exit:
+	li $v0, 10
+    syscall
+   	jr $ra
+
+
+
+get_size :   			# Get Size Function
+	la $t8 , ($a0)
 	addi $t0 , $0 , 0
 	addi $t1 , $0 , 0
 	addi $t2 , $0 , 20
@@ -31,7 +136,7 @@ for :
 	slt $t4 , $t1 , $t2
 	bne $t4 , $t3 , Endfor
 	
-	mul $t7 , $t1 , 5   # t7 = 5 * i 
+	sll $t7 , $t1 , 3   # t7 = 8 * i 
 	add $t7 , $t7 , $t8
 	lw  $t9 , 0($t7)
 
@@ -46,12 +151,12 @@ Endfor :
 
 
 
-join_Lists :
+join_Lists :				#Join List Function
 
 	addi $sp , $sp, -20      # Make room for 5
 	sw $a0 , 0($sp)          # first
 	sw $a1 , 4($sp)          # second
-	sw $s5 , 8($sp)		  # l1
+	sw $s5 , 8($sp)		  	 # l1
 	sw $s6 , 12($sp)         # l2
 	sw $ra , 16($sp)         # return value
 	
@@ -111,7 +216,7 @@ join_Lists :
 	jal get_size
 	add $t4 , $0 , $v0
 
-    la $a0 , 0($s6)
+        la $a0 , 0($s6)
 	jal get_size
 	add $t5 , $0 , $v0
  
@@ -149,8 +254,8 @@ while2 :
 ExitWhile2 :
 
 	addi $s7 , $t5 , 0     # need to know how access priority and name   l1[i].priority = l2[j].priority; l1[i].name = l2[j].name;
-	lw   $t5 , 4($t9)
-	sw   $t5 , 4($t8)
+	lb   $t5 , 4($t9)
+	sb   $t5 , 4($t8)
 	addi $t5 , $0 , 0     # need to know how access priority
 	sw   $t5 , 0($t9)
 	j for_loop
@@ -171,7 +276,8 @@ addi $sp, $sp, 20       #restore the stack
 jr $ra                  #return to caller 
 
 
-swap:               #swap method
+
+swap:               	#swap method
 	addi $sp, $sp, -12  # Make stack room for three
 
 	sw $a0, 0($sp)      # Store a0
@@ -191,7 +297,7 @@ swap:               #swap method
 
 
 	addi $sp, $sp, 12   #Restoring the stack size
-	jr $ra          #jump back to the caller
+	jr $ra          	#jump back to the caller
 
 	partition:          #partition method
 
@@ -273,7 +379,6 @@ quick_sort:
 
 endif0:
 
-
 	lw $a0, 0($sp)          #restore a0
 	lw $a1, 4($sp)          #restore a1
 	lw $a2, 8($sp)          #restore a2
@@ -282,7 +387,7 @@ endif0:
 	jr $ra                  #return to caller 
 	
 	
-put_all : # put all function
+put_all : 				# put all function
 	
 	addi $t0 , $0 , 0   # j = 0
 	addi $t1 , $0 , 1   # i = 0
@@ -301,16 +406,18 @@ for_one :
 	beq $t6 , $t9 , end_if1
 	sll $t7 , $t0 , 3      # t7 = 8 * j
 	add $t7 , $t7 , $s7
-	lw  $t8 , 4($t5)
+	lb  $t8 , 4($t5)
 	sw  $t6 , 0($t7)
-	sw  $t8 , 4($t7)
+	sb  $t8 , 4($t7)
 	
 	addi $t0 , $t0 , 1
 	addi $t1 , $t1 , 1
 	j for_one
+
 end_if1:
 	addi $t1 , $t1 , 1
 	j for_one
+	
 end_one :
     
 	addi $t1 , $0 , 0
@@ -328,18 +435,19 @@ for_two :
 	beq $t6 , $t9 , end_if2
 	sll $t7 , $t0 , 3      # t7 = 8 * j
 	add $t7 , $t7 , $s7
-	lw  $t8 , 4($t5)
+	lb  $t8 , 4($t5)
 	sw  $t6 , 0($t7)
-	sw  $t8 , 4($t7)
+	sb  $t8 , 4($t7)
 	
 	addi $t0 , $t0 , 1
 	addi $t1 , $t1 , 1
 	j for_two
+	
 end_if2:
 	addi $t1 , $t1 , 1
 	j for_two
-end_two :
 
+end_two :
 
 	addi $t1 , $0 , 0
 	addi $t6 , $0 , 0
@@ -356,18 +464,19 @@ for_three :
 	beq $t6 , $t9 , end_if3
 	sll $t7 , $t0 , 3       # t7 = 8 * j
 	add $t7 , $t7 , $s7
-	lw  $t8 , 4($t5)
+	lb  $t8 , 4($t5)
 	sw  $t6 , 0($t7)
-	sw  $t8 , 4($t7)
+	sb  $t8 , 4($t7)
 	
 	addi $t0 , $t0 , 1
 	addi $t1 , $t1 , 1
 	j for_three
+	
 end_if3:
 	addi $t1 , $t1 , 1
 	j for_three
-end_three :
 
+end_three :
 	addi $t1 , $0 , 0
 	addi $t6 , $0 , 0
 	addi $t8 , $0 , 0
@@ -383,13 +492,14 @@ for_four :
 	beq $t6 , $t9 , end_if4
 	sll $t7 , $t0 , 3       # t7 = 8 * j
 	add $t7 , $t7 , $s7
-	lw  $t8 , 4($t5)
+	lb  $t8 , 4($t5)
 	sw  $t6 , 0($t7)
-	sw  $t8 , 4($t7)
+	sb  $t8 , 4($t7)
 	
 	addi $t0 , $t0 , 1
 	addi $t1 , $t1 , 1
 	j for_four
+	
 end_if4:
 	addi $t1 , $t1 , 1
 	j for_four
@@ -464,22 +574,22 @@ update_priority:              		#void update_priority(char name, int priority)
    	jr   $ra
    	
    	
-proccess: # process all
+proccess_all: # process all
 
 	add $a0 , $0 , $s1
-	jal get_size
+	#jal get_size
 	add $t0 , $0 , $v0
 	
 	add $a1 , $0 , $s2
-	jal get_size
+	#jal get_size
 	add $t1 , $0 , $v0 
 	
 	add $a2 , $0 , $s3
-	jal get_size
+	#jal get_size
 	add $t2 , $0 , $v0
 	
 	add $a3 , $0 , $s4
-	jal get_size
+	#jal get_size
 	add $t3 , $0 , $v0
 	
 	add $t4 , $t0 , $t1
@@ -495,53 +605,3 @@ while:
 exitwhile:	
 
    	jr   $ra
-
-
-
-main:
-
-
-	 la $a0, prompt     # address of prompt
-     li $v0, 4
-     syscall
-     
-     la $a0, addr     # address of addr
-     li $v0, 4
-     syscall
-     
-     la $a0, process    # address of process
-     li $v0, 4
-     syscall
-     
-     la $a0, join     # address of prompt
-     li $v0, 4
-     syscall
-     
-     la $a0, empty     # address of empty
-     li $v0, 4
-     syscall
-     
-     la $a0, update     # address of empty
-     li $v0, 4
-     syscall
-     
-     la $a0, processall     # address of processall
-     li $v0, 4
-     syscall
-     
-     la $a0, search     # address of search
-     li $v0, 4
-     syscall
-     
-     la $a0, tirm     # address of tirm
-     li $v0, 4
-     syscall
-
-	#  read the choice
-     li $v0, 5
-     syscall
-     sw $v0, choice  
-
-	li $v0, 10
-    syscall
-   	jr $ra
