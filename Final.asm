@@ -6,13 +6,6 @@
 	all : .space 640   # Request all[80]
 .text
 
-main:
-
-	
-	li $v0, 10
-    syscall
-   	jr $ra
-
 get_size : 
 	addi $t8 , $a0 , 0
 	addi $t0 , $0 , 0
@@ -392,7 +385,7 @@ end_four :
 
 update_priority:              		#void update_priority(char name, int priority) 
    	# prologue                	
-   	addiu $sp, $sp, -20
+   	addi $sp, $sp, -20
    	sw   $ra, 16($sp)
 	sw   $s3, 12($sp)              
 	sw   $s2, 8($sp)
@@ -451,7 +444,7 @@ update_priority:              		#void update_priority(char name, int priority)
 	lw   $s2, 8($sp)
 	lw   $s3, 12($sp)
 	lw   $ra, 16($sp)
-	addiu $sp, $sp, 20
+	addi $sp, $sp, 20
 	li $v0, 10
     	syscall
    	jr   $ra
@@ -490,3 +483,359 @@ exitwhile:
 	li $v0, 10
     	syscall
    	jr   $ra
+
+
+
+main:
+
+    addi   $sp,$sp,-72
+        sw      $31,68($sp)
+        sw      $fp,64($sp)
+        sw      $16,60($sp)
+        move    $fp,$sp
+        jal     empty_lists
+         
+
+$L111:
+        li     $2,%hi($LC2)
+        addi   $4,$2,%lo($LC2)
+        jal     puts
+         
+
+        li     $2,%hi($LC3)
+        addi   $4,$2,%lo($LC3)
+        jal     puts
+         
+
+        li     $2,%hi($LC4)
+        addi   $4,$2,%lo($LC4)
+        jal     puts
+         
+
+        li     $2,%hi($LC5)
+        addi   $4,$2,%lo($LC5)
+        jal     puts
+         
+
+        li     $2,%hi($LC6)
+        addi   $4,$2,%lo($LC6)
+        jal     puts
+         
+
+        li     $2,%hi($LC7)
+        addi   $4,$2,%lo($LC7)
+        jal     puts
+         
+
+        li     $2,%hi($LC8)
+        addi   $4,$2,%lo($LC8)
+        jal     puts
+         
+
+        li     $2,%hi($LC9)
+        addi   $4,$2,%lo($LC9)
+        jal     puts
+         
+
+        addi   $2,$fp,28
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        lw      $3,28($fp)
+        li      $2,1                        # 0x1
+        bne     $3,$2,$L100
+         
+
+        li     $2,%hi($LC11)
+        addi   $4,$2,%lo($LC11)
+        jal     printf
+         
+
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        jal     getchar
+         
+
+        sll     $2,$2,24
+        sra     $2,$2,24
+        sb      $2,36($fp)
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        li     $2,%hi($LC12)
+        addi   $4,$2,%lo($LC12)
+        jal     printf
+         
+
+        addi   $2,$fp,32
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        lw      $4,32($fp)
+        lw      $5,36($fp)
+        jal     add_request
+         
+
+        b       $L111
+         
+
+$L100:
+        lw      $3,28($fp)
+        li      $2,2                        # 0x2
+        bne     $3,$2,$L102
+         
+
+        jal     process_request
+         
+
+        b       $L111
+         
+
+$L102:
+        lw      $3,28($fp)
+        li      $2,3                        # 0x3
+        bne     $3,$2,$L103
+         
+
+        li     $2,%hi($LC13)
+        addi   $4,$2,%lo($LC13)
+        jal     printf
+         
+
+        addi   $2,$fp,40
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        li     $2,%hi($LC14)
+        addi   $4,$2,%lo($LC14)
+        jal     printf
+         
+
+        addi   $2,$fp,44
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        b       $L104
+         
+
+$L105:
+        li     $2,%hi($LC15)
+        addi   $4,$2,%lo($LC15)
+        jal     printf
+         
+
+        addi   $2,$fp,48
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        lw      $2,44($fp)
+        lw      $3,48($fp)
+         
+        move    $5,$3
+        move    $4,$2
+        jal     join_lists
+         
+
+$L104:
+        lw      $2,40($fp)
+         
+        addi   $3,$2,-1
+        sw      $3,40($fp)
+        bne     $2,$0,$L105
+         
+
+        b       $L111
+         
+
+$L103:
+        lw      $3,28($fp)
+        li      $2,4                        # 0x4
+        bne     $3,$2,$L106
+         
+
+        jal     empty_lists
+         
+
+        li     $2,%hi($LC16)
+        addi   $4,$2,%lo($LC16)
+        jal     puts
+         
+
+        b       $L111
+         
+
+$L106:
+        lw      $3,28($fp)
+        li      $2,5                        # 0x5
+        bne     $3,$2,$L107
+         
+
+        li     $2,%hi($LC11)
+        addi   $4,$2,%lo($LC11)
+        jal     printf
+         
+
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        jal     getchar
+         
+
+        sb      $2,24($fp)
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        li     $2,%hi($LC17)
+        addi   $4,$2,%lo($LC17)
+        jal     printf
+         
+
+        addi   $2,$fp,52
+        move    $5,$2
+        li     $2,%hi($LC10)
+        addi   $4,$2,%lo($LC10)
+        jal     __isoc99_scanf
+         
+
+        lb      $2,24($fp)
+        lw      $3,52($fp)
+         
+        move    $5,$3
+        move    $4,$2
+        jal     update_priority
+         
+
+        b       $L111
+         
+
+$L107:
+        lw      $3,28($fp)
+        li      $2,6                        # 0x6
+        bne     $3,$2,$L108
+         
+
+        jal     process_all_requests
+         
+
+        li     $2,%hi($LC18)
+        addi   $4,$2,%lo($LC18)
+        jal     puts
+         
+
+        b       $L111
+         
+
+$L108:
+        lw      $3,28($fp)
+        li      $2,7                        # 0x7
+        bne     $3,$2,$L109
+         
+
+        li     $2,%hi($LC19)
+        addi   $4,$2,%lo($LC19)
+        jal     printf
+         
+
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        jal     getchar
+         
+
+        sb      $2,25($fp)
+        li     $2,%hi(stdin)
+        lw      $2,%lo(stdin)($2)
+         
+        move    $4,$2
+        jal     fflush
+         
+
+        li     $2,%hi(list1)
+        addi   $4,$2,%lo(list1)
+        jal     get_size
+         
+
+        move    $16,$2
+        li     $2,%hi(list2)
+        addi   $4,$2,%lo(list2)
+        jal     get_size
+         
+
+        addu    $16,$16,$2
+        li     $2,%hi(list3)
+        addi   $4,$2,%lo(list3)
+        jal     get_size
+         
+
+        addu    $16,$16,$2
+        li     $2,%hi(list4)
+        addi   $4,$2,%lo(list4)
+        jal     get_size
+         
+
+        addu    $2,$16,$2
+        lb      $3,25($fp)
+         
+        move    $6,$3
+        move    $5,$2
+        move    $4,$0
+        jal     binary_search
+         
+
+        li     $2,%hi($LC18)
+        addi   $4,$2,%lo($LC18)
+        jal     puts
+         
+
+        b       $L111
+         
+
+$L109:
+        move    $2,$0
+        move    $sp,$fp
+        lw      $31,68($sp)
+        lw      $fp,64($sp)
+        lw      $16,60($sp)
+        addi   $sp,$sp,72
+        j       $31
+         
+        
+li $v0, 10
+    syscall
+   	jr $ra
